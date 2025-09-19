@@ -98,3 +98,119 @@ Presenter - презентер содержит основную логику п
 `emit<T extends object>(event: string, data?: T): void` - инициализация события. При вызове события в метод передается название события и объект с данными, который будет использован как аргумент для вызова обработчика.  
 `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
 
+## Данные
+
+### Интерфейс IProduct 
+Описывает товары используемые в приложении
+
+Поля:
+- `id: string` - уникальный идентификатор товара
+- `title: string` - название товара
+- `description: string` - описание товара
+- `image: string` - URL изображения товара
+- `category: string` - категория товара
+- `price: number | null` - цена товара
+
+### Интерфейс ICustomer
+Описывает покупателя
+
+Поля:
+- `paymentMethod: "card" | "cash" | null` - способ оплаты заказа
+- `email: string` - email покупателя
+- `phone: string` - номер телефона покупателя
+- `address: string` - адрес доставки
+
+### Интерфейс IGetProducts
+Описывает ответ сервера на запрос товаров
+
+Поля:
+- `totalCount: number` -  количество товаров
+- `products: IProduct[]` - массив товаров
+
+### Интерфейс ICreateOrderRequest
+Описывает запрос на создание заказа
+
+Поля:
+- `payment: "card" | "cash" | null` - способ оплаты заказа
+- `email: string` - email покупателя
+- `phone: string` - номер телефона покупателя
+- `address: string` - адрес доставки
+- `total: number` - итога сумма заказа
+- `items: string[]` - массив id товаров
+
+### Интерфейс ICreateOrderResponse
+Описывает ответ сервера на запрос создания заказа
+
+Поля:
+- `id: string` - идентификатор заказа
+- `total: number` - итогова сумма заказа` 
+
+## Модели данных
+
+### Класс Catalog
+Содержит логику управления каталогом товаров
+
+Конструктор класса не принимает параметров
+
+Поля класса:
+- `prodcuts: IProduct[]` - массив товаров в каталоге
+- `selectedProduct: IProduct | null` - выбранная в каталоге карточка
+
+Методы:
+- `setProductsList(products: IProduct[]): void` - сохраняет массив товаров полученный в параметрах метода
+- `getProductsList(): IProduct[]` - возвращает массив всех товаров
+- `getProductById(id: string): IProduct` - возвращает товар по его id
+- `setSelectedProduct(selectedProduct: IProduct): void` - сохраняет товар для подробного отображения
+- `getSelectedProduct(): IProduct | null` - возвращает товар для подробного отображения
+
+### Класс Cart
+Содержит логику управления корзиной товаров
+
+Конструктор класса не принимает параметров
+
+Поля класса:
+- `cartProdcuts: IProduct[]` - массив товаров, выбранных покупателем для покупки
+
+Методы:
+- `getCartProducts(): IProduct[]` - возвращает массив товаров, которые находятся в корзине
+- `addCartProduct(product: IProduct): void` - добавляет товар, который был получен в параметре, в массив корзины
+- `deleteCartProduct(product: IProduct): void` - удаляет товар, который был получен в параметре, из массива корзины
+- `clearCart(): void` - очищает корзину
+- `getTotalPrice(): number` - возвращает стоимость всех товаров в корзине
+- `getTotalCount(): number` - возвращает количество товаров в корзине
+- `isInCart(id: string): boolean` - проверяет наличие товара в корзине по его id, полученному в параметр метода
+
+### Класс Customer
+Cодержит логику управления данными покупателя
+
+Конструктор класса не принимает параметров
+
+Поля класса:
+- `paymentMethod: "card" | "cash" | null` - способ оплаты заказа
+- `email: string` - email покупателя
+- `phone: string` - номер телефона покупателя
+- `address: string` - адрес доставки
+
+Методы:
+- `setEmail(email: string): void` - сохраняет email пользователя
+- `setPhone(phone: string): void` - сохраняет номер телефона пользователя
+- `setAddress(address: string): void` - сохраняет адрес доставки
+- `setPaymentMethod(paymentMethod: "card" | "cash" | null): void` - сохраняет способ оплаты заказа
+- `getCustomerData(): ICustomer` - возвращает все данные покупателя
+- `clearCustomerData(): void` - очищает данные покупателя
+- `validateCustomerData(value: string): boolean` - валидирует данные
+
+## Слой коммуникации 
+
+### Класс ApiLayer
+Класс отвечает за получение данных с сервера и отправку данных на сервер
+
+Конструктор:
+- `constructor(api: IApi)` - принимает объект класса IApi
+
+Поля:
+- `api: IApi` — экземпляр класса IApi, предоставляемый из стартового набора
+
+Методы:
+- `getProducts(): Promise<IGetResponse>` - возвращает с сервера объект с массивом товаров
+- `postOrder(orderData: IPostRequestData): Promise<IPostResponse>` - отправляtn на сервер данные о покупателе и выбранных товарах
