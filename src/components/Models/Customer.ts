@@ -37,19 +37,12 @@ export class Customer {
         this.phone = "";
         this.address = "";
     }
-
-    validateCustomerData(value: string): boolean {
-        switch (value) {
-            case "paymentMethod":
-                return this.paymentMethod === "card" || this.paymentMethod === "cash";
-            case "email":
-                return /^[\w.-]+@[\w.-]+\.\w+$/.test(this.email);
-            case "phone":
-                return /^\+?[0-9]{7,15}$/.test(this.phone);
-            case "address":
-                return this.address.trim().length > 0;
-            default:
-                return false;
+    validateCustomerData(field: string): boolean {
+        if (field === "paymentMethod") {
+            return this.paymentMethod === "card" || this.paymentMethod === "cash";
         }
+
+        const value = (this as any)[field];
+        return typeof value === "string" && value.trim().length > 0;
     }
 }
