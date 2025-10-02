@@ -11,6 +11,7 @@ export interface IProduct {
     description: string;
     image: string;
     price: number | null;
+    category: string;
 }
 
 export interface ICustomer {
@@ -18,7 +19,7 @@ export interface ICustomer {
     email: string;
     phone: string;
     address: string;
-} 
+}
 
 export interface IGetProducts {
     totalCount: number;
@@ -36,5 +37,36 @@ export interface ICreateOrderRequest {
 
 export interface ICreateOrderResponse {
     id: string;
+    total: number;
+}
+
+export interface IHeader {
+    counter: number;
+}
+
+export interface ICart {
+  items: HTMLElement[];
+  total: number;
+}
+
+export interface IGallery {
+    items: HTMLElement[];
+}
+
+export interface IModal {
+    content: HTMLElement;
+}
+
+export interface IBaseCard {
+    id: string;
+    title: string;
+    price: number | null;
+}
+
+export interface IForm {
+    error: string | null;
+}
+
+export interface ISuccess {
     total: number;
 }
