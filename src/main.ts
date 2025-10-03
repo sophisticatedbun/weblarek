@@ -119,7 +119,6 @@ events.on('cardPreview:button-click', () => {
         } else {
             cartModel.addCartProduct(product);
         }
-        // Обновляем отображение карточки товара
         events.emit('catalog:product-selected');
     }
 });
@@ -151,7 +150,6 @@ events.on('cart:changed', () => {
 
     cartView.totalPrice = cartModel.getTotalPrice();
 
-    // Обновляем содержимое модального окна только если не отображается Success
     if (!isSuccessDisplayed) {
         modalView.content = cartView.render();
         modalView.isOpen = true;
@@ -165,14 +163,14 @@ events.on('cart:open-order', () => {
 
 events.on('payment:changed', (data: { paymentMethod: 'card' | 'cash' }) => {
     customerModel.setPaymentMethod(data.paymentMethod);
-    const isValid = customerModel.validateCustomerData('paymentMethod');
-    orderFormView.errors = isValid ? '' : 'Необходимо выбрать способ оплаты';
+    const errorMessage = customerModel.validateOrder();
+    orderFormView.errors = errorMessage;
 });
 
 events.on('address:changed', (data: { address: string }) => {
     customerModel.setAddress(data.address);
-    const isValid = customerModel.validateCustomerData('address');
-    orderFormView.errors = isValid ? '' : 'Необходимо указать адрес доставки';
+    const errorMessage = customerModel.validateOrder();
+    orderFormView.errors = errorMessage;
 });
 
 events.on('order:submit', () => {
@@ -182,14 +180,14 @@ events.on('order:submit', () => {
 
 events.on('contacts:email-changed', (data: { email: string }) => {
     customerModel.setEmail(data.email);
-    const isValid = customerModel.validateCustomerData('email');
-    contactsFormView.errors = isValid ? '' : 'Некорректный email';
+    const errorMessage = customerModel.validateContact();
+    contactsFormView.errors = errorMessage;
 });
 
 events.on('contacts:phone-changed', (data: { phone: string }) => {
     customerModel.setPhone(data.phone);
-    const isValid = customerModel.validateCustomerData('phone');
-    contactsFormView.errors = isValid ? '' : 'Некорректный телефон';
+    const errorMessage = customerModel.validateContact();
+    contactsFormView.errors = errorMessage;
 });
 
 events.on('contacts:submit', () => {

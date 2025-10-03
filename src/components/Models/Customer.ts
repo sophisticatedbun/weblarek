@@ -52,12 +52,57 @@ export class Customer {
         this.address = "";
         this.events.emit('customer:changed');
     }
-    validateCustomerData(field: string): boolean {
+    validateCustomerData(field: string): string {
         if (field === "paymentMethod") {
-            return this.paymentMethod === "card" || this.paymentMethod === "cash";
+            if (this.paymentMethod === "card" || this.paymentMethod === "cash") {
+                return "";
+            }
+            return "Необходимо выбрать способ оплаты";
         }
 
         const value = (this as any)[field];
-        return value.trim().length > 0;
+        if (value.trim().length > 0) {
+            return "";
+        }
+        
+        if (field === "email") {
+            return "Необходимо указать email";
+        }
+        if (field === "phone") {
+            return "Необходимо указать телефон";
+        }
+        if (field === "address") {
+            return "Необходимо указать адрес доставки";
+        }
+        
+        return "Поле не может быть пустым";
+    }
+    
+    validateOrder(): string {
+        const paymentError = this.validateCustomerData("paymentMethod");
+        if (paymentError) {
+            return paymentError;
+        }
+        
+        const addressError = this.validateCustomerData("address");
+        if (addressError) {
+            return addressError;
+        }
+        
+        return "";
+    }
+    
+    validateContact(): string {
+        const emailError = this.validateCustomerData("email");
+        if (emailError) {
+            return emailError;
+        }
+        
+        const phoneError = this.validateCustomerData("phone");
+        if (phoneError) {
+            return phoneError;
+        }
+        
+        return "";
     }
 }

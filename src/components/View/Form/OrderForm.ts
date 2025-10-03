@@ -24,26 +24,20 @@ export class OrderForm extends Form {
                 this._paymentMethod = 'card';
                 this.togglePaymentMethod('card');
                 events.emit('payment:changed', { paymentMethod: 'card' });
-                this.validateForm();
             } else if (target === this._paymentCash) {
                 this._paymentMethod = 'cash';
                 this.togglePaymentMethod('cash');
                 events.emit('payment:changed', { paymentMethod: 'cash' });
-                this.validateForm();
             }
         });
 
         this._address.addEventListener('input', (e) => {
             const target = e.target as HTMLInputElement;
             events.emit('address:changed', { address: target.value });
-            this.validateForm();
         });
 
         this._nextBtn.addEventListener('click', () => {
-            // Проверяем валидацию перед отправкой
-            if (this._address.value.trim() && this._paymentMethod) {
                 events.emit('order:submit');
-            }
         });
     }
 
@@ -52,31 +46,13 @@ export class OrderForm extends Form {
         this._paymentCash.classList.toggle('button_alt-active', method === 'cash');
     }
 
-    private validateForm() {
-        const address = this._address.value.trim();
-        let errorMessage = '';
-
-        if (!address) {
-            errorMessage = 'Необходимо указать адрес доставки';
-        } else if (!this._paymentMethod) {
-            errorMessage = 'Необходимо выбрать способ оплаты';
-        }
-
-        this.errors = errorMessage;
-        
-        // Активируем кнопку "Далее" только если нет ошибок
-        this._nextBtn.disabled = !!errorMessage;
-    }
-
     set address(value: string) {
         this._address.value = value;
-        this.validateForm();
     }
 
     set paymentMethod(value: 'card' | 'cash' | null) {
         this._paymentMethod = value;
         this.togglePaymentMethod(value);
-        this.validateForm();
     }
 
     clear(): void {
